@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen Civique 2026 - Entraînement Interactif</title>
+    <title>Examen Civique Français - CSP & CR</title>
     <style>
         * {
             margin: 0;
@@ -12,21 +12,18 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
 
         .container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
             max-width: 900px;
-            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
 
@@ -40,17 +37,67 @@
         .header h1 {
             font-size: 32px;
             margin-bottom: 10px;
-            font-weight: 700;
         }
 
         .header p {
             font-size: 16px;
-            opacity: 0.95;
-            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .exam-selector {
+            background: white;
+            padding: 30px 40px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .exam-selector label {
+            display: block;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .exam-selector select {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .exam-selector select:hover {
+            border-color: #764ba2;
+        }
+
+        
+        .exam-type-info {
+            display: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            background: #f0f0ff;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            text-align: center;
+        }
+
+        .exam-type-info .info-icon {
+            margin-right: 8px;
+        }
+        .exam-selector select:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118,75,162,0.1);
         }
 
         .progress-container {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.2);
             height: 10px;
             border-radius: 10px;
             overflow: hidden;
@@ -60,13 +107,14 @@
         .progress-bar {
             background: white;
             height: 100%;
-            transition: width 0.4s ease;
             width: 0%;
+            transition: width 0.4s ease;
         }
 
         .progress-text {
-            font-size: 14px;
+            color: white;
             margin-top: 15px;
+            font-size: 14px;
             opacity: 0.9;
         }
 
@@ -80,22 +128,6 @@
 
         .question-section.active {
             display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .question-header {
-            margin-bottom: 30px;
         }
 
         .question-number {
@@ -104,7 +136,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .question-text {
@@ -112,71 +144,57 @@
             font-weight: 600;
             color: #2c3e50;
             line-height: 1.6;
+            margin-bottom: 30px;
         }
 
         .answers-container {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 30px;
         }
 
         .answer-option {
             background: #f8f9fa;
-            border: 2px solid #ddd;
-            padding: 18px 20px;
-            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 16px;
             line-height: 1.5;
-            color: #333;
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
         }
 
-        .answer-option::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #667eea;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .answer-option:hover:not(:disabled) {
+        .answer-option:hover {
+            background: #e8f0fe;
             border-color: #667eea;
-            background: #f0f4ff;
+            transform: translateX(5px);
         }
 
-        .answer-option:hover:not(:disabled)::before {
-            opacity: 1;
-        }
-
-        .answer-option.disabled {
-            cursor: not-allowed;
+        .answer-option.selected {
+            background: #e8f0fe;
+            border-color: #667eea;
         }
 
         .answer-option.correct {
-            background: #d4edda;
-            border-color: #28a745;
+            background: #d4edda !important;
+            border-color: #28a745 !important;
             color: #155724;
         }
 
         .answer-option.incorrect {
-            background: #f8d7da;
-            border-color: #dc3545;
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
             color: #721c24;
+        }
+
+        .answer-option.disabled {
+            pointer-events: none;
         }
 
         .feedback-message {
             margin-top: 25px;
-            padding: 18px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             font-size: 15px;
             line-height: 1.6;
             display: none;
@@ -184,29 +202,17 @@
 
         .feedback-message.show {
             display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .feedback-correct {
             background: #d4edda;
-            border-left: 4px solid #28a745;
+            border-left: 5px solid #28a745;
             color: #155724;
         }
 
         .feedback-incorrect {
             background: #f8d7da;
-            border-left: 4px solid #dc3545;
+            border-left: 5px solid #dc3545;
             color: #721c24;
         }
 
@@ -218,14 +224,23 @@
         }
 
         .btn {
-            padding: 14px 30px;
+            flex: 1;
+            padding: 16px 30px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-prev {
@@ -233,24 +248,15 @@
             color: #333;
         }
 
-        .btn-prev:hover:not(:disabled) {
-            background: #dee2e6;
-            transform: translateX(-3px);
-        }
-
         .btn-next {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-        }
-
-        .btn-next:hover:not(:disabled) {
-            background: #5568d3;
-            transform: translateX(3px);
         }
 
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none !important;
         }
 
         .results-section {
@@ -261,20 +267,21 @@
 
         .results-section.show {
             display: block;
-            animation: fadeIn 0.5s ease;
         }
 
         .results-section h2 {
             font-size: 36px;
             color: #667eea;
             margin-bottom: 30px;
-            font-weight: 700;
         }
 
         .score-display {
             font-size: 72px;
             font-weight: 700;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin: 30px 0;
         }
 
@@ -285,39 +292,39 @@
             margin: 20px 0;
         }
 
-        .result-message {
-            font-size: 20px;
-            color: #555;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
         .pass-status {
             font-size: 24px;
             font-weight: 700;
             margin: 30px 0;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
         }
 
         .pass-status.passed {
             background: #d4edda;
             color: #155724;
-            border: 2px solid #28a745;
+            border: 3px solid #28a745;
         }
 
         .pass-status.failed {
             background: #f8d7da;
             color: #721c24;
-            border: 2px solid #dc3545;
+            border: 3px solid #dc3545;
+        }
+
+        .result-message {
+            font-size: 18px;
+            color: #666;
+            margin: 20px 0;
+            line-height: 1.6;
         }
 
         .restart-btn {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 16px 40px;
+            padding: 18px 40px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
@@ -326,8 +333,8 @@
         }
 
         .restart-btn:hover {
-            background: #5568d3;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
         }
 
         @media (max-width: 768px) {
@@ -335,21 +342,17 @@
                 padding: 30px;
             }
 
+            .header h1 {
+                font-size: 24px;
+            }
+
             .question-text {
                 font-size: 18px;
             }
 
             .answer-option {
-                padding: 15px 16px;
+                padding: 15px;
                 font-size: 14px;
-            }
-
-            .header {
-                padding: 30px;
-            }
-
-            .header h1 {
-                font-size: 24px;
             }
 
             .score-display {
@@ -363,30 +366,56 @@
             .button-group {
                 flex-direction: column;
             }
+        }
 
-            .btn {
-                min-width: 100%;
-            }
+        .reset-btn-header {
+            margin-top: 15px;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background: rgba(255,255,255,0.18);
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            letter-spacing: 0.3px;
+        }
+        .reset-btn-header:hover {
+            background: white;
+            color: #764ba2;
+            border-color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🇫🇷 Examen Civique 2026</h1>
-            <p>Entraînement Interactif - Décret 2025-1345</p>
+            <h1>🇫🇷 Examen Civique Français 2026</h1>
+            <p>Préparation Complète - CSP & CR</p>
             <div class="progress-container">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
             <div class="progress-text" id="progressText">Question 1 sur 40</div>
+            <button class="reset-btn-header" id="resetBtn" onclick="resetExamCompletely()" style="display:none;">🔄 Recommencer l'examen</button>
+        </div>
+
+        <div class="exam-selector">
+            <label for="examType">Sélectionnez le type d'examen :</label>
+            <select id="examType" onchange="changeExamType()">
+                <option value="CSP">Examen Civique CSP (Carte de Séjour Pluriannuelle)</option>
+                <option value="CR">Examen Civique CR (Carte de Résident)</option>
+            </select>
+            <div class="exam-type-info" id="examTypeInfo"></div>
         </div>
 
         <div class="content">
             <div class="question-section active" id="questionSection">
-                <div class="question-header">
-                    <div class="question-number" id="questionNumber">Question 1</div>
-                    <div class="question-text" id="questionText"></div>
-                </div>
+                <div class="question-number" id="questionNumber">Question 1</div>
+                <div class="question-text" id="questionText"></div>
                 <div class="answers-container" id="answersContainer"></div>
                 <div class="feedback-message" id="feedbackMessage"></div>
                 <div class="button-group">
@@ -401,1221 +430,211 @@
                 <div class="percentage-display" id="percentageDisplay">0%</div>
                 <div class="pass-status" id="passStatus"></div>
                 <div class="result-message" id="resultMessage"></div>
-                <button class="restart-btn" onclick="location.reload()">Recommencer l'Examen</button>
+                <button class="restart-btn" onclick="restartExam()">Recommencer l'Examen</button>
             </div>
         </div>
+    <div style="text-align: center; padding: 24px 40px 20px; border-top: 1px solid #e0e0e0; background: #f9f9fc;">
+        <p style="font-size: 14px; color: #555; margin-bottom: 8px;">
+            Pour plus d'informations officielles sur la formation civique, consultez :
+        </p>
+        <a href="https://formation-civique.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer"
+           style="display: inline-block; font-size: 15px; font-weight: 700; color: #667eea; text-decoration: none; padding: 8px 18px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s ease;"
+           onmouseover="this.style.background='#667eea'; this.style.color='white';"
+           onmouseout="this.style.background='transparent'; this.style.color='#667eea';">
+            🌐 formation-civique.interieur.gouv.fr
+        </a>
+        <p style="font-size: 12px; color: #aaa; margin-top: 16px;">
+            &copy; 2026 Lawrence AI. Tous droits réservés. &mdash; Ce contenu est fourni à titre informatif uniquement.
+        </p>
     </div>
+</div>
 
     <script>
-        const allQuestions = [
-            // === PRINCIPES ET VALEURS DE LA RÉPUBLIQUE ===
-            {
-                question: "À quoi correspond la date du 14 juillet ?",
-                answers: [
-                    "La naissance de Napoléon Bonaparte",
-                    "La prise de la Bastille et le début de la Révolution française",
-                    "La signature officielle de la Déclaration des Droits de l'Homme",
-                    "La fin de la Révolution française et l'établissement de la Première République"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est l'un des symboles de la République française ?",
-                answers: [
-                    "Le drapeau tricolore avec bordure dorée officielle",
-                    "Le drapeau tricolore",
-                    "L'aigle impérial napoléonien avec la couronne",
-                    "Le sceau royal de la couronne des Bourbons"
-                ],
-                correct: 1
-            },
-            {
-                question: "Le principe d'égalité signifie que :",
-                answers: [
-                    "Tous les citoyens gagnent exactement le même salaire",
-                    "Tous les citoyens ont les mêmes droits et devoirs sans distinction",
-                    "Seules les personnes ayant un emploi jouissent d'une égalité civile",
-                    "L'égalité s'applique uniquement devant les tribunaux et la justice"
-                ],
-                correct: 1
-            },
-            {
-                question: "\"Liberté, égalité, fraternité\", c'est :",
-                answers: [
-                    "Une philosophie personnelle des présidents français",
-                    "La devise officielle de la République française",
-                    "Un slogan créé par les organisations sociales modernes",
-                    "Le nom du premier traité fondateur de l'Union européenne"
-                ],
-                correct: 1
-            },
-            {
-                question: "A-t-on le droit d'insulter publiquement quelqu'un parce qu'il est différent (handicap, apparence physique, sexe…) ?",
-                answers: [
-                    "Oui, c'est protégé par la liberté d'expression personnelle",
-                    "Non, c'est une discrimination et c'est punissable par la loi",
-                    "Seulement si la personne a d'abord provoqué ou insulté",
-                    "Oui, si c'est présenté comme une opinion humoristique ou artistique"
-                ],
-                correct: 1
-            },
-            {
-                question: "Certains métiers peuvent-ils être réservés aux hommes ?",
-                answers: [
-                    "Oui, les métiers physiquement exigeants requièrent une force naturellement masculine",
-                    "Oui, pour préserver les traditions et les rôles sociaux établis historiquement",
-                    "Non, le principe d'égalité interdit la discrimination professionnelle basée sur le sexe",
-                    "Oui, mais seulement dans le secteur militaire et les forces de l'ordre"
-                ],
-                correct: 2
-            },
-            {
-                question: "De quand date la Constitution de la Ve République ?",
-                answers: [
-                    "1789, de la Révolution française",
-                    "1848, de la Deuxième République",
-                    "1958, de la fondation de la Cinquième République",
-                    "2000, de la réforme constitutionnelle moderne"
-                ],
-                correct: 2
-            },
-            {
-                question: "Le régime de la France est :",
-                answers: [
-                    "Une monarchie constitutionnelle avec un Parlement consultatif",
-                    "Une dictature électorale avec des périodes régulières d'élections libres",
-                    "Une République démocratique",
-                    "Un empire présidentiel sans véritable séparation des pouvoirs"
-                ],
-                correct: 2
-            },
-            {
-                question: "Lequel de ces symboles représente officiellement la République française ?",
-                answers: [
-                    "La couronne royale de Charlemagne",
-                    "Marianne",
-                    "L'aigle impérial napoléonien",
-                    "La fleur de lys royale des Capétiens"
-                ],
-                correct: 1
-            },
-            {
-                question: "Où peut-on voir la devise de la République ?",
-                answers: [
-                    "Uniquement dans les musées historiques et les collections archéologiques",
-                    "Sur les édifices publics, les pièces de monnaie et les documents officiels",
-                    "Seulement sur le drapeau national et l'hymne écrit musical",
-                    "Principalement dans les églises et les lieux de culte religieux"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quels sont des symboles officiels de la République française ?",
-                answers: [
-                    "Le drapeau tricolore, la Marseillaise, Marianne",
-                    "La croix rouge, le lion bleu, l'aigle bicéphale austro-hongrois",
-                    "La couronne, le sceptre, l'épée royale de Jeanne d'Arc",
-                    "Le soleil, la lune, les étoiles dorées en constellation"
-                ],
-                correct: 0
-            },
-            {
-                question: "Qu'est-ce que l'égalité ?",
-                answers: [
-                    "Que tout le monde possède exactement les mêmes biens matériels",
-                    "Que chacun gagne exactement la même somme d'argent pour tout travail",
-                    "Que tous les citoyens aient les mêmes droits et les mêmes devoirs, sans distinction",
-                    "Que seules les personnes ayant un statut social élevé ont accès à la justice"
-                ],
-                correct: 2
-            },
-            {
-                question: "Que signifie la liberté ?",
-                answers: [
-                    "Faire exactement ce qu'on veut sans aucune limite légale ou morale",
-                    "Avoir le droit d'agir selon sa volonté, dans le respect des lois et droits d'autrui",
-                    "Être complètement indépendant du gouvernement et de toute société",
-                    "Pouvoir contester publiquement le gouvernement sans aucune conséquence légale"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que signifie le mot \"fraternité\" dans la devise française ?",
-                answers: [
-                    "Une relation biologique entre frères et sœurs d'une même famille",
-                    "La solidarité entre citoyens et le respect mutuel",
-                    "Un sentiment exclusivement religieux ou spirituel transcendantal",
-                    "L'amitié personnelle et les liens privés entre gouvernants et citoyens"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel animal est un symbole de la France ?",
-                answers: [
-                    "L'aigle royal des montagnes",
-                    "Le lion des Alpes et des Vosges",
-                    "Le coq gaulois",
-                    "L'ours des Pyrénées méridionales"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quel est l'un des rôles des associations ?",
-                answers: [
-                    "Gouverner directement le pays aux côtés du Parlement",
-                    "Participer à la vie civique et promouvoir l'intérêt général",
-                    "Émettre des lois avec la même autorité officielle que le Parlement",
-                    "Collecter les impôts et les transférer au gouvernement"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est le nom de l'hymne national ?",
-                answers: [
-                    "Le Chant du Départ",
-                    "La Marseillaise",
-                    "Ô mon Beau Canada",
-                    "L'Internationale"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel symbole de la République française est tricolore ?",
-                answers: [
-                    "Marianne",
-                    "Le coq gaulois",
-                    "Le drapeau",
-                    "La Marseillaise écrite"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quelle est la date de la fête nationale française ?",
-                answers: [
-                    "Le 1er janvier (Jour de l'An)",
-                    "Le 14 juillet",
-                    "Le 11 novembre (Armistice)",
-                    "Le 25 décembre (Noël)"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quelle est la devise de la République française ?",
-                answers: [
-                    "Honneur et Patrie",
-                    "Dieu, Roi, Patrie",
-                    "Liberté, égalité, fraternité",
-                    "Union et Force"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quelle est la langue officielle de la République française ?",
-                answers: [
-                    "L'anglais",
-                    "Le français",
-                    "L'allemand",
-                    "L'espagnol"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quelle est la place de la langue française dans la République ?",
-                answers: [
-                    "C'est une langue parmi d'autres, sans importance particulière",
-                    "C'est la langue officielle de la République, instrument de l'unité nationale",
-                    "C'est une langue facultative, laissée au choix personnel de chacun",
-                    "C'est uniquement une langue régionale, sans statut officiel"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quelle liberté permet à chacun d'exprimer ses idées ?",
-                answers: [
-                    "La liberté de culte et de pratique religieuse",
-                    "La liberté de conscience et de pensée personnelle",
-                    "La liberté d'expression",
-                    "La liberté d'association et de réunion"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quelle proposition est correcte ? La liberté d'expression :",
-                answers: [
-                    "Est absolue et n'a aucune limite légale",
-                    "Permet de dire n'importe quoi sans conséquence légale ou sociale",
-                    "Permet de s'exprimer librement, mais elle a des limites (diffamation, incitation à la violence)",
-                    "N'existe que pour les journalistes et les politiciens"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quelles sont les couleurs du drapeau français ?",
-                answers: [
-                    "Bleu, blanc, rouge",
-                    "Bleu, blanc, vert",
-                    "Rouge, blanc, bleu",
-                    "Bleu, blanc, or"
-                ],
-                correct: 0
-            },
-            {
-                question: "Qu'est-ce que la Marseillaise ?",
-                answers: [
-                    "Une danse provençale du XIXe siècle",
-                    "L'hymne national français",
-                    "Une recette culinaire régionale française",
-                    "Une région administrative du sud-est de la France"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qu'est ce qui est traditionnellement organisé sur les Champs Élysées le 14 juillet pour célébrer la fête nationale ?",
-                answers: [
-                    "Un grand marché aux fleurs avec des vendeurs internationaux",
-                    "Un concert gratuit de musique classique et contemporaine",
-                    "Un défilé militaire",
-                    "Une exposition d'art moderne et d'installations publiques"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui est Marianne ?",
-                answers: [
-                    "Une reine de France du XVIIe siècle",
-                    "La personnification de la République française",
-                    "Une héroïne locale de la Révolution française",
-                    "Une statue à Versailles datant de l'Ancien Régime"
-                ],
-                correct: 1
-            },
-            {
-                question: "Une personne peut-elle changer librement de religion ?",
-                answers: [
-                    "Non, c'est interdit par la loi après la majorité",
-                    "Seulement avec l'autorisation écrite officielle du gouvernement",
-                    "Oui, la liberté de conscience et de religion est un droit fondamental",
-                    "Seulement si elle en informe préalablement la préfecture"
-                ],
-                correct: 2
-            },
-            {
-                question: "\"La France est une République indivisible, ..., démocratique et sociale\". Complétez cette phrase extraite de l'article 1er de la Constitution :",
-                answers: [
-                    "impériale",
-                    "laïque",
-                    "centralisée",
-                    "égalitaire"
-                ],
-                correct: 1
-            },
-            {
-                question: "En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",
-                answers: [
-                    "1789, lors de la Révolution française",
-                    "1905, sous le gouvernement Combes",
-                    "1958, lors de la création de la Ve République",
-                    "1999, lors de la réforme constitutionnelle"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que permet le principe de laïcité ?",
-                answers: [
-                    "D'imposer l'athéisme obligatoire à tous les citoyens",
-                    "De séparer les affaires religieuses des affaires d'État et garantir la liberté de conscience",
-                    "D'interdire entièrement les pratiques religieuses privées et publiques",
-                    "De favoriser une seule religion comme culte officiel d'État"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel droit est garanti par la laïcité ?",
-                answers: [
-                    "Le droit d'être riche sans obligations religieuses",
-                    "Le droit de ne pas travailler si cela contrevient à ses croyances",
-                    "Le droit à la liberté de conscience et de religion pour tous",
-                    "Le droit de voyager librement à travers les pays religieux"
-                ],
-                correct: 2
-            },
-            {
-                question: "Pourquoi le principe de laïcité doit-il être respecté à l'école ?",
-                answers: [
-                    "Parce que les professeurs n'aiment pas la religion en général",
-                    "Pour accueillir tous les élèves sans discrimination religieuse et assurer une éducation égalitaire",
-                    "Parce que c'est formellement interdit par l'Église catholique française",
-                    "Pour éviter les questions morales ou philosophiques difficiles"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qu'est-ce que la laïcité ?",
-                answers: [
-                    "Une religion athée ou une philosophie non-théiste",
-                    "Le principe de séparation de la religion et de l'État, garantissant la liberté de conscience",
-                    "Un parti politique d'extrême-gauche",
-                    "Un mouvement religieux basé sur les valeurs universelles"
-                ],
-                correct: 1
-            },
-            {
-                question: "Un enfant peut-il refuser d'aller à l'école pour une raison religieuse ?",
-                answers: [
-                    "Oui, c'est son droit individuel de conscience",
-                    "Non, l'école est obligatoire pour tous jusqu'à 16 ans",
-                    "Seulement pendant les périodes de grande fête religieuse majeure",
-                    "Oui, s'il peut justifier que sa religion l'exige formellement"
-                ],
-                correct: 1
-            },
-            {
-                question: "Une personne a-t-elle le droit de ne pas croire en une religion ?",
-                answers: [
-                    "Non, c'est obligatoire pour participer à la vie civile",
-                    "Oui, la liberté de conscience comprend le droit de ne pas avoir de religion",
-                    "Seulement s'il en a l'autorisation officielle écrite",
-                    "Non, on doit croire en quelque chose selon la loi"
-                ],
-                correct: 1
-            },
-
-            // === SYSTÈME INSTITUTIONNEL ET POLITIQUE ===
-            {
-                question: "Qui nomme le Premier ministre ?",
-                answers: [
-                    "Le Parlement par un vote de confiance parlementaire",
-                    "Les citoyens lors d'une élection directe",
-                    "Le Président de la République",
-                    "Le Ministre de l'Intérieur"
-                ],
-                correct: 2
-            },
-            {
-                question: "Le Parlement est composé :",
-                answers: [
-                    "Du Président et de ses ministres",
-                    "Des députés et des sénateurs",
-                    "Du Gouvernement et de la magistrature",
-                    "Des maires des communes et des préfets"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qu'est-ce que le pouvoir exécutif ? Le pouvoir :",
-                answers: [
-                    "De voter et d'amender les lois",
-                    "De rendre la justice et d'interpréter les lois",
-                    "D'exécuter les lois et de gouverner",
-                    "De contrôler et de vérifier les finances publiques"
-                ],
-                correct: 2
-            },
-            {
-                question: "Les dirigeants sont élus par les citoyens dans :",
-                answers: [
-                    "Les dictatures avec élections contrôlées",
-                    "Les régimes démocratiques",
-                    "Les monarchies absolues héréditaires",
-                    "Les oligarchies de familles nobles"
-                ],
-                correct: 1
-            },
-            {
-                question: "A-t-on le droit de ne pas respecter une loi ?",
-                answers: [
-                    "Oui, si on n'est personnellement pas d'accord",
-                    "Non, tout le monde doit respecter la loi",
-                    "Oui, seulement les personnes instruites peuvent",
-                    "Non, seulement si la loi a été votée avant votre majorité"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qui doit respecter la loi ?",
-                answers: [
-                    "Uniquement les citoyens ordinaires et travailleurs",
-                    "Uniquement le gouvernement et les autorités",
-                    "Tout le monde, citoyens comme autorités",
-                    "Personne, c'est un principe volontaire"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quel est le rôle de l'autorité judiciaire ?",
-                answers: [
-                    "Voter les lois et créer la législation",
-                    "Gouverner le pays et nommer les officiels",
-                    "Rendre la justice et appliquer la loi",
-                    "Gérer l'administration des communes"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quel pouvoir détient un juge ? Le pouvoir :",
-                answers: [
-                    "Exécutif",
-                    "Législatif",
-                    "Judiciaire",
-                    "Monarchique"
-                ],
-                correct: 2
-            },
-            {
-                question: "L'autorité judiciaire est exercée par :",
-                answers: [
-                    "Le Président de la République",
-                    "Les juges et les magistrats",
-                    "Le Parlement et l'Assemblée",
-                    "Le Gouvernement et ses ministres"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que se passe-t-il si un ministre ne respecte pas la loi ?",
-                answers: [
-                    "Rien, les ministres bénéficient d'une immunité complète",
-                    "Il doit être jugé comme n'importe quel citoyen",
-                    "Il reçoit seulement une réprimande administrative",
-                    "Le Président le protège automatiquement"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qui est élu lors des élections législatives ?",
-                answers: [
-                    "Le Président de la République",
-                    "Les députés",
-                    "Les maires et conseillers municipaux",
-                    "Les sénateurs et représentants régionaux"
-                ],
-                correct: 1
-            },
-            {
-                question: "Combien de députés composent l'Assemblée nationale ?",
-                answers: [
-                    "100",
-                    "200",
-                    "577",
-                    "900"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quand sont élus les sénateurs ?",
-                answers: [
-                    "Tous les 4 ans lors des élections nationales",
-                    "Tous les 5 ans en même temps que les députés",
-                    "Tous les 6 ans par renouvellement partiel",
-                    "Tous les 7 ans par le Parlement"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui est élu lors des élections municipales ?",
-                answers: [
-                    "Le maire et le conseil municipal",
-                    "Le Président et le gouvernement",
-                    "Les députés et sénateurs",
-                    "Les préfets et sous-préfets"
-                ],
-                correct: 0
-            },
-            {
-                question: "Qui est élu lors des élections présidentielles ?",
-                answers: [
-                    "Le Premier ministre",
-                    "Le Président de la République",
-                    "Les gouverneurs régionaux",
-                    "Le chef du gouvernement"
-                ],
-                correct: 1
-            },
-            {
-                question: "À partir de quel âge a-t-on le droit de voter ?",
-                answers: [
-                    "16 ans",
-                    "18 ans",
-                    "21 ans",
-                    "25 ans"
-                ],
-                correct: 1
-            },
-            {
-                question: "Pour combien de temps est élu le président de la République française ?",
-                answers: [
-                    "4 ans",
-                    "5 ans",
-                    "6 ans",
-                    "7 ans"
-                ],
-                correct: 1
-            },
-            {
-                question: "Pour combien de temps sont élus les députés ?",
-                answers: [
-                    "3 ans",
-                    "4 ans",
-                    "5 ans",
-                    "6 ans"
-                ],
-                correct: 2
-            },
-            {
-                question: "Pour combien de temps sont élus les sénateurs ?",
-                answers: [
-                    "3 ans",
-                    "4 ans",
-                    "6 ans",
-                    "9 ans"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui possède le pouvoir exécutif ?",
-                answers: [
-                    "Les juges et les tribunaux",
-                    "Le Parlement et ses commissions",
-                    "Le Président et le Gouvernement",
-                    "L'assemblée générale des citoyens"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quelle condition est nécessaire pour voter aux élections ?",
-                answers: [
-                    "Être riche et propriétaire",
-                    "Être français, majeur et jouir de ses droits civiques",
-                    "Être propriétaire d'une maison",
-                    "Avoir un emploi stable et un revenu minimum"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qui peut voter aux élections en France ?",
-                answers: [
-                    "Tous les habitants, peu importe la nationalité",
-                    "Les citoyens français âgés d'au moins 18 ans",
-                    "Uniquement les hommes majeurs",
-                    "Les personnes ayant complété une éducation universitaire"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que signifie « suffrage universel » ?",
-                answers: [
-                    "Le droit de vote pour tous les riches propriétaires",
-                    "Le droit de vote pour tous les citoyens sans distinction",
-                    "Le droit de vote pour les hommes seulement",
-                    "Le droit de vote pour les citoyens propriétaires fonciers"
-                ],
-                correct: 1
-            },
-            {
-                question: "Concernant les partis politiques, quelle proposition est correcte ?",
-                answers: [
-                    "Un seul parti politique est autorisé par la Constitution",
-                    "Les citoyens peuvent constituer ou adhérer à des partis politiques",
-                    "Les partis politiques ne peuvent critiquer le gouvernement",
-                    "Les partis politiques n'ont aucun rôle officiel"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est le rôle des députés ?",
-                answers: [
-                    "De gouverner le pays seuls sans contrepoids",
-                    "De voter les lois et de contrôler le gouvernement",
-                    "De rendre la justice et d'interpréter les lois",
-                    "De gérer l'administration des communes"
-                ],
-                correct: 1
-            },
-            {
-                question: "La séparation des pouvoirs est un principe fondamental. Quels sont les trois pouvoirs concernés ?",
-                answers: [
-                    "Le pouvoir monarchique, démocratique et républicain",
-                    "Le pouvoir central, régional et local",
-                    "Le pouvoir exécutif, législatif et judiciaire",
-                    "Le pouvoir militaire, civil et religieux"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui possède le pouvoir législatif ?",
-                answers: [
-                    "Le Président de la République",
-                    "Le Gouvernement et ses ministres",
-                    "Les juges et les magistrats",
-                    "Le Parlement (Assemblée nationale et Sénat)"
-                ],
-                correct: 3
-            },
-            {
-                question: "Qui sanctionne l'auteur d'un vol ?",
-                answers: [
-                    "La police locale seule",
-                    "Le Gouvernement par décret",
-                    "Les juges (l'autorité judiciaire)",
-                    "Le maire de la commune"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui élit les députés ?",
-                answers: [
-                    "Le Président directement",
-                    "Les citoyens français",
-                    "Le Sénat lors d'un vote",
-                    "Le Gouvernement par nomination"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qui vote les lois ?",
-                answers: [
-                    "Le Président seul par décret",
-                    "Le Gouvernement avec le Président",
-                    "Les juges et les tribunaux",
-                    "Le Parlement"
-                ],
-                correct: 3
-            },
-            {
-                question: "Qui réside au palais de l'Élysée ?",
-                answers: [
-                    "Le Premier ministre",
-                    "Le Président de la République",
-                    "Les députés et sénateurs",
-                    "Le Sénat entier"
-                ],
-                correct: 1
-            },
-            {
-                question: "Combien y a-t-il de départements en France ?",
-                answers: [
-                    "22",
-                    "50",
-                    "96",
-                    "120"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui représente l'État dans un département ?",
-                answers: [
-                    "Le maire de la commune principale",
-                    "Le gouverneur régional",
-                    "Le préfet",
-                    "Le sénateur du département"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui dirige la commune ?",
-                answers: [
-                    "Le préfet du département",
-                    "Le maire",
-                    "Le gouverneur régional",
-                    "Le sénateur local"
-                ],
-                correct: 1
-            },
-            {
-                question: "Est-ce que le président de la République a tous les pouvoirs ?",
-                answers: [
-                    "Oui, c'est un monarque électif",
-                    "Non, ses pouvoirs sont limités par la Constitution et la séparation des pouvoirs",
-                    "Oui, il peut faire ce qu'il veut",
-                    "Non, il n'a pratiquement aucun pouvoir"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qui est le préfet ?",
-                answers: [
-                    "Le représentant élu de la commune",
-                    "Le représentant de l'État dans une région ou un département",
-                    "Un juge civil ou correctionnel",
-                    "Un officier militaire de haut rang"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est le rôle du Parlement ?",
-                answers: [
-                    "Gouverner directement le pays sans interférence",
-                    "Voter les lois et contrôler le gouvernement",
-                    "Rendre la justice et maintenir l'ordre public",
-                    "Gérer l'administration locale et municipale"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est le régime politique de la France aujourd'hui ?",
-                answers: [
-                    "Une monarchie absolue ou constitutionnelle",
-                    "Une dictature militaire ou civile",
-                    "Une République démocratique semi-présidentielle",
-                    "Un empire présidentiel centralisé"
-                ],
-                correct: 2
-            },
-            {
-                question: "Combien d'États font partie de l'Union européenne au 1er janvier 2025 ?",
-                answers: [
-                    "25",
-                    "27",
-                    "30",
-                    "32"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel État n'est pas membre de l'Union européenne ?",
-                answers: [
-                    "La Suisse",
-                    "La Belgique",
-                    "La Pologne",
-                    "La Slovaquie"
-                ],
-                correct: 0
-            },
-            {
-                question: "Quelle condition est nécessaire pour voter aux élections européennes ?",
-                answers: [
-                    "Être français uniquement",
-                    "Être citoyen d'un État membre et être majeur",
-                    "Être propriétaire d'une entreprise ou d'une maison",
-                    "Avoir une profession stable depuis au moins 2 ans"
-                ],
-                correct: 1
-            },
-            {
-                question: "À quelle fréquence les élections européennes sont-elles organisées ?",
-                answers: [
-                    "Tous les 3 ans",
-                    "Tous les 4 ans",
-                    "Tous les 5 ans",
-                    "Tous les 10 ans"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quel pays est un pays fondateur de l'Union européenne ?",
-                answers: [
-                    "La Grèce",
-                    "La France",
-                    "L'Irlande",
-                    "Le Portugal"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quelle est la monnaie utilisée en France ?",
-                answers: [
-                    "Le franc",
-                    "La livre sterling",
-                    "L'euro",
-                    "Le dollar américain"
-                ],
-                correct: 2
-            },
-            {
-                question: "Qui élit les députés européens ?",
-                answers: [
-                    "Les gouvernements des États membres",
-                    "Les citoyens des États membres",
-                    "Le Parlement français",
-                    "Le Président français"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quand célèbre-t-on la journée de l'Europe ?",
-                answers: [
-                    "Le 1er janvier",
-                    "Le 9 mai",
-                    "Le 14 juillet",
-                    "Le 11 novembre"
-                ],
-                correct: 1
-            },
-
-            // === DROITS ET DEVOIRS ===
-            {
-                question: "Comment s'appelle la Constitution actuelle de la France ?",
-                answers: [
-                    "Constitution de la IVe République",
-                    "Constitution de la Ve République",
-                    "Constitution révolutionnaire",
-                    "Charte constitutionnelle"
-                ],
-                correct: 1
-            },
-            {
-                question: "Comment s'appelle le texte qui énonce les droits et devoirs des personnes résidant en France ?",
-                answers: [
-                    "Le code pénal",
-                    "La Déclaration des droits de l'homme et du citoyen",
-                    "Le code civil",
-                    "La Charte européenne des droits"
-                ],
-                correct: 1
-            },
-            {
-                question: "Concernant les droits individuels, quelle proposition est correcte ?",
-                answers: [
-                    "Seul le gouvernement possède des droits",
-                    "Les droits individuels appartiennent à chaque personne et sont inaliénables",
-                    "Les droits individuels dépendent uniquement de la fortune",
-                    "Les droits individuels peuvent être donnés ou refusés arbitrairement"
-                ],
-                correct: 1
-            },
-            {
-                question: "De quelle année date la Déclaration des droits de l'homme et du citoyen ?",
-                answers: [
-                    "1776",
-                    "1789",
-                    "1804",
-                    "1848"
-                ],
-                correct: 1
-            },
-            {
-                question: "Lequel de ces droits est un droit fondamental ?",
-                answers: [
-                    "Le droit d'être riche sans impôt",
-                    "Le droit à la vie, à la liberté et à la sécurité",
-                    "Le droit d'avoir des esclaves",
-                    "Le droit de ne pas payer d'impôts"
-                ],
-                correct: 1
-            },
-            {
-                question: "Parmi ces textes, lequel garantit les droits et libertés en France ?",
-                answers: [
-                    "Le code de la route",
-                    "La Constitution et la Déclaration des droits de l'homme",
-                    "Le code du travail",
-                    "La loi électorale"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qu'est-ce que la liberté d'expression ?",
-                answers: [
-                    "Le droit de dire exactement ce qu'on pense sans aucune limite",
-                    "Le droit d'exprimer ses opinions, avec des limites légales",
-                    "Un droit réservé exclusivement aux journalistes",
-                    "Le droit de mentir publiquement impunément"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel droit permet à une personne de se défendre devant la justice ?",
-                answers: [
-                    "Le droit de vote",
-                    "Le droit à un procès équitable et à une défense légale",
-                    "Le droit d'association",
-                    "Le droit de grève"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est le texte fondateur établissant en France les droits et les devoirs de chaque citoyen ?",
-                answers: [
-                    "Le code pénal",
-                    "La Déclaration des droits et la Constitution",
-                    "Le traité de Versailles",
-                    "Le code civil"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel texte a été adopté pendant la Révolution française ?",
-                answers: [
-                    "La Magna Carta britannique",
-                    "La Déclaration des droits de l'homme et du citoyen",
-                    "La déclaration d'indépendance américaine",
-                    "Le traité de Paris"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quelle liberté permet à une personne de ne pas avoir de religion ?",
-                answers: [
-                    "La liberté d'expression",
-                    "La liberté d'association",
-                    "La liberté de conscience et de religion",
-                    "La liberté d'aller et venir"
-                ],
-                correct: 2
-            },
-            {
-                question: "Une femme peut avorter :",
-                answers: [
-                    "Jamais, c'est entièrement interdit",
-                    "Seulement avec l'autorisation de son mari",
-                    "Seulement avec l'autorisation des parents",
-                    "Jusqu'à une certaine limite de semaines, dans un cadre légal"
-                ],
-                correct: 3
-            },
-            {
-                question: "Est-il toujours possible de divorcer ?",
-                answers: [
-                    "Non, le divorce est interdit par la loi",
-                    "Seulement avec l'autorisation du clergé",
-                    "Oui, le divorce est un droit reconnu par la loi",
-                    "Seulement après 50 ans de mariage"
-                ],
-                correct: 2
-            },
-            {
-                question: "La peine de mort est :",
-                answers: [
-                    "Légale et couramment appliquée pour les crimes graves",
-                    "Abolie en France depuis 1981",
-                    "Applicable seulement pour le crime de trahison",
-                    "Décidée par le maire et le préfet"
-                ],
-                correct: 1
-            },
-            {
-                question: "Concernant les limites aux libertés individuelles, quelle proposition est correcte ?",
-                answers: [
-                    "Les libertés individuelles sont absolues et illimitées",
-                    "Les libertés peuvent être limitées quand elles menacent l'ordre public ou droits d'autrui",
-                    "Seul le gouvernement a des libertés",
-                    "Les limites aux libertés sont décidées arbitrairement"
-                ],
-                correct: 1
-            },
-            {
-                question: "En France, est-ce légal d'être marié à plusieurs personnes en même temps ?",
-                answers: [
-                    "Oui, selon les coutumes culturelles",
-                    "Non, la polygamie est interdite par la loi",
-                    "Seulement avec une autorisation spéciale",
-                    "Oui, c'est autorisé depuis 2000"
-                ],
-                correct: 1
-            },
-            {
-                question: "Faut-il réduire ses déchets ?",
-                answers: [
-                    "Non, ça n'a aucune importance environnementale",
-                    "C'est juste une suggestion facultative",
-                    "Oui, c'est un devoir de protéger l'environnement",
-                    "Seulement si on en a l'envie"
-                ],
-                correct: 2
-            },
-            {
-                question: "Jeter une bouteille dans la rue est :",
-                answers: [
-                    "Toléré et sans conséquence",
-                    "Obligatoire selon la loi",
-                    "Une infraction punissable d'une amende",
-                    "Autorisé le weekend"
-                ],
-                correct: 2
-            },
-            {
-                question: "Pourquoi les libertés individuelles peuvent-elles être limitées ?",
-                answers: [
-                    "Pour le plaisir du gouvernement",
-                    "Pour maintenir l'ordre public et protéger les droits d'autrui",
-                    "Elles ne peuvent jamais être limitées",
-                    "Pour punir les gens au hasard"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que doit faire une personne en cas d'accident ?",
-                answers: [
-                    "Ne rien faire et continuer son chemin",
-                    "Appeler les secours et aider les blessés si possible",
-                    "Prendre une photo pour les réseaux sociaux",
-                    "Blâmer la victime"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que permet la citoyenneté française ?",
-                answers: [
-                    "D'être riche sans impôts",
-                    "D'exercer droits politiques et avoir certains devoirs",
-                    "De ne pas respecter la loi",
-                    "De commander les autres citoyens"
-                ],
-                correct: 1
-            },
-            {
-                question: "Que risque une personne qui ne respecte pas la loi ?",
-                answers: [
-                    "Rien, les lois sont facultatives",
-                    "Poursuites judiciaires et sanctions (amende, emprisonnement)",
-                    "Seulement une réprimande verbale du maire",
-                    "D'être expulsée du pays sans appel"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quel est le rôle de la gendarmerie ?",
-                answers: [
-                    "Gouverner le pays avec le Parlement",
-                    "Voter les lois et émettre des décrets",
-                    "Assurer l'ordre public, la sécurité et faire respecter la loi",
-                    "Rendre la justice"
-                ],
-                correct: 2
-            },
-            {
-                question: "Quel est le rôle de la police ?",
-                answers: [
-                    "Gouverner le pays et nommer les officiels",
-                    "Assurer l'ordre public, la sécurité et faire respecter la loi",
-                    "Voter les lois et les amender",
-                    "Rendre la justice"
-                ],
-                correct: 1
-            },
-            {
-                question: "Qu'est-ce qu'une infraction ?",
-                answers: [
-                    "Une bonne action charitable",
-                    "Une violation de la loi",
-                    "Une maladie contagieuse",
-                    "Une opinion politique dissidente"
-                ],
-                correct: 1
-            },
-            {
-                question: "Comment peut-on réduire ses déchets ?",
-                answers: [
-                    "En en produisant davantage volontairement",
-                    "En réutilisant, recyclant et consommant de manière responsable",
-                    "Il n'y a aucun moyen pratique",
-                    "En les jetant discrètement"
-                ],
-                correct: 1
-            },
-            {
-                question: "Déposer une machine à laver cassée sur le trottoir est :",
-                answers: [
-                    "Autorisé et gratuit",
-                    "Une infraction ; l'apporter à un centre de recyclage",
-                    "Une bonne idée pour le voisinage",
-                    "Obligatoire une fois par mois"
-                ],
-                correct: 1
-            },
-            {
-                question: "En quoi consiste la traite des êtres humains ?",
-                answers: [
-                    "Un échange commercial normal et légal",
-                    "Le transport de passagers par bus",
-                    "L'exploitation de personnes par la force, fraude ou coercition",
-                    "Un commerce international avec tarifs réduits"
-                ],
-                correct: 2
-            },
-            {
-                question: "Que doit faire une victime de violences ?",
-                answers: [
-                    "Rien et garder le silence",
-                    "Signaler les violences à la police et chercher de l'aide",
-                    "Accepter et oublier",
-                    "Se venger sans recours à la justice"
-                ],
-                correct: 1
-            },
-            {
-                question: "Quelle est l'infraction la plus grave ?",
-                answers: [
-                    "Un excès de vitesse de 5 km/h",
-                    "Un crime (comme le meurtre ou le viol)",
-                    "Garer sa voiture sur un trottoir",
-                    "Arriver en retard à un rendez-vous"
-                ],
-                correct: 1
-            }
+        // CSP Question Bank (existing questions)
+        const questionBankCSP = [
+            {q:"À quoi correspond la date du 14 juillet ?",a:["La signature officielle de la Déclaration des Droits de l'Homme","La prise de la Bastille et le début de la Révolution française","La naissance de Napoléon Bonaparte dans le respect des valeurs républicaines","La fin de la Révolution française pour l'ensemble des citoyens concernés"],c:1},
+            {q:"Quel est l'un des symboles de la République française ?",a:["Le sceau royal des Bourbons","Le drapeau tricolore avec bordure dorée","Le drapeau tricolore","L'aigle impérial napoléonien"],c:2},
+            {q:"Le principe d'égalité signifie que :",a:["L'égalité s'applique uniquement devant les tribunaux tel que défini par la loi française","Tous les citoyens gagnent le même salaire dans le respect des valeurs républicaines","Seuls les employés ont l'égalité civile conformément aux principes de la République","Tous les citoyens ont les mêmes droits et devoirs sans distinction"],c:3},
+            {q:"\"Liberté, égalité, fraternité\", c'est :",a:["Un slogan créé par les organisations sociales","Le nom du premier traité européen dans le respect des valeurs républicaines","La devise officielle de la République française","Une philosophie des présidents dans le respect des valeurs républicaines"],c:2},
+            {q:"A-t-on le droit d'insulter publiquement quelqu'un parce qu'il est différent ?",a:["Oui, c'est protégé par la liberté d'expression","Seulement si la personne a provoqué tel que défini par la loi française","Non, c'est une discrimination punissable par la loi","Oui, si c'est humoristique conformément aux principes de la République"],c:2},
+            {q:"Certains métiers peuvent-ils être réservés aux hommes ?",a:["Oui, pour les traditions conformément aux principes de la République","Oui, les métiers physiques selon la constitution en vigueur dans ce cadre","Oui, dans le militaire uniquement selon la constitution en vigueur","Non, le principe d'égalité interdit la discrimination basée sur le sexe"],c:3},
+            {q:"De quand date la Constitution de la Ve République ?",a:["1958","1848","2000","1789"],c:0},
+            {q:"Le régime de la France est :",a:["Une République démocratique","Un empire présidentiel","Une dictature électorale","Une monarchie constitutionnelle"],c:0},
+            {q:"Lequel de ces symboles représente officiellement la République française ?",a:["Marianne","L'aigle napoléonien","La couronne de Charlemagne","La fleur de lys"],c:0},
+            {q:"Où peut-on voir la devise de la République ?",a:["Sur les édifices publics, pièces et documents officiels","Le cadre légal prévoit que dans les églises dans ce domaine","Le principe retenu est que sur le drapeau seulement","Le cadre légal prévoit que dans les musées uniquement"],c:0},
+            {q:"Quels sont des symboles officiels de la République française ?",a:["Le cadre légal prévoit que croix rouge, lion bleu","Drapeau tricolore, Marseillaise, Marianne","Le principe retenu est que couronne, sceptre, épée","Il est prévu que soleil, lune, étoiles"],c:1},
+            {q:"Qu'est-ce que l'égalité ?",a:["Tous ont les mêmes droits et devoirs sans distinction","Tous ont les mêmes biens conformément aux principes de la République","Seuls les riches ont la justice pour l'ensemble des citoyens concernés","Tous gagnent la même somme dans le respect des valeurs républicaines"],c:0},
+            {q:"Que signifie la liberté ?",a:["Agir selon sa volonté dans le respect des lois et droits d'autrui","Il est prévu que contester sans conséquence en pratique","Le cadre légal prévoit que être indépendant du gouvernement","La réglementation prévoit que faire ce qu'on veut sans limite"],c:0},
+            {q:"Que signifie \"fraternité\" dans la devise française ?",a:["Le cadre légal prévoit que relation biologique familiale","La réglementation prévoit que sentiment religieux","Le principe retenu est que amitié entre gouvernants","La solidarité entre citoyens et le respect mutuel"],c:3},
+            {q:"Quel animal est un symbole de la France ?",a:["Le coq gaulois","L'ours pour l'ensemble des citoyens concernés","L'aigle selon la constitution en vigueur","Le lion tel que défini par la loi française"],c:0},
+            {q:"Quel est l'un des rôles des associations ?",a:["Le cadre légal prévoit que gouverner le pays dans ce domaine","Le principe retenu est que émettre des lois en pratique","Participer à la vie civique et promouvoir l'intérêt général","Il est prévu que collecter les impôts dans ce cadre"],c:2},
+            {q:"Quel est le nom de l'hymne national ?",a:["Le Chant du Départ","L'Internationale","Le principe retenu est que ô Canada","La Marseillaise"],c:3},
+            {q:"Quel symbole de la République française est tricolore ?",a:["La Marseillaise","Le drapeau","Marianne","Le coq dans le respect des valeurs républicaines"],c:1},
+            {q:"Quelle est la date de la fête nationale française ?",a:["11 novembre","14 juillet","1er janvier","25 décembre"],c:1},
+            {q:"Quelle est la devise de la République française ?",a:["La réglementation prévoit que dieu, Roi, Patrie","Le cadre légal prévoit que honneur et Patrie","Le cadre légal prévoit que union et Force","Liberté, égalité, fraternité"],c:3},
+            {q:"Quelle est la langue officielle de la République française ?",a:["Le français","L'allemand","L'anglais","L'espagnol"],c:0},
+            {q:"Quelle est la place de la langue française dans la République ?",a:["Une langue parmi d'autres pour l'ensemble des citoyens concernés","La langue officielle, instrument de l'unité nationale","Une langue régionale uniquement dans le respect des valeurs républicaines","Une langue facultative pour l'ensemble des citoyens concernés"],c:1},
+            {q:"Quelle liberté permet à chacun d'exprimer ses idées ?",a:["Liberté de culte","Liberté d'association","Liberté de conscience","Liberté d'expression"],c:3},
+            {q:"La liberté d'expression :",a:["La réglementation prévoit que est absolue sans limite","Permet de s'exprimer librement, mais avec des limites légales","Il est prévu que n'existe que pour journalistes en pratique","La réglementation prévoit que permet de dire n'importe quoi"],c:1},
+            {q:"Quelles sont les couleurs du drapeau français ?",a:["Bleu, blanc, rouge","Bleu, blanc, vert","Rouge, blanc, bleu","Bleu, blanc, or"],c:0},
+            {q:"Qu'est-ce que la Marseillaise ?",a:["Une région administrative","L'hymne national français","Une recette culinaire","Une danse provençale"],c:1},
+            {q:"Qu'est-ce qui est organisé sur les Champs-Élysées le 14 juillet ?",a:["Un défilé militaire","Un concert gratuit","Un marché aux fleurs","Une exposition d'art"],c:0},
+            {q:"Qui est Marianne ?",a:["Une reine du XVIIe dans le respect des valeurs républicaines","La personnification de la République française","Une statue à Versailles selon la constitution en vigueur","Une héroïne révolutionnaire pour l'ensemble des citoyens concernés"],c:1},
+            {q:"Une personne peut-elle changer librement de religion ?",a:["Non, c'est interdit selon la constitution en vigueur dans ce domaine","Il est prévu que avec autorisation gouvernementale dans ce domaine","Oui, la liberté de conscience et de religion est un droit fondamental","La réglementation prévoit que en informant la préfecture dans ce cadre"],c:2},
+            {q:"\"La France est une République indivisible, ..., démocratique et sociale\"",a:["impériale","laïque","centralisée","égalitaire"],c:1},
+            {q:"En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",a:["1958","1905","1999","1789"],c:1},
+            {q:"Que permet le principe de laïcité ?",a:["Séparer religion et État et garantir la liberté de conscience","Il est prévu que imposer l'athéisme dans ce cadre","Il est prévu que favoriser une religion dans ce cadre","Le principe retenu est que interdire les pratiques religieuses"],c:0},
+            {q:"Quel droit est garanti par la laïcité ?",a:["Il est prévu que voyager librement dans ce cadre","Le droit à la liberté de conscience et de religion pour tous","Il est prévu que ne pas travailler en pratique","La réglementation prévoit que être riche sans obligations"],c:1},
+            {q:"Pourquoi le principe de laïcité doit-il être respecté à l'école ?",a:["Il est prévu que c'est interdit par l'Église dans ce cadre","Pour accueillir tous les élèves sans discrimination religieuse","Le principe retenu est que pour éviter questions difficiles","Les professeurs n'aiment pas la religion tel que défini par la loi française"],c:1},
+            {q:"Qu'est-ce que la laïcité ?",a:["Le principe de séparation de la religion et de l'État","Une religion athée selon la constitution en vigueur","Un mouvement religieux selon la constitution en vigueur","Un parti politique pour l'ensemble des citoyens concernés"],c:0},
+            {q:"Un enfant peut-il refuser l'école pour raison religieuse ?",a:["La réglementation prévoit que pendant les fêtes religieuses","Il est prévu que si sa religion l'exige","Oui, droit de conscience conformément aux principes de la République","Non, l'école est obligatoire jusqu'à 16 ans"],c:3},
+            {q:"Une personne a-t-elle le droit de ne pas croire en une religion ?",a:["Il est prévu que avec autorisation en pratique","Non, c'est obligatoire dans le respect des valeurs républicaines dans ce domaine","Non, doit croire tel que défini par la loi française dans ce domaine","Oui, la liberté de conscience comprend le droit de ne pas avoir de religion"],c:3},
+            {q:"Qui nomme le Premier ministre ?",a:["Le Parlement tel que défini par la loi française","Les citoyens selon la constitution en vigueur","Le Ministre de l'Intérieur","Le Président de la République"],c:3},
+            {q:"Le Parlement est composé :",a:["Du Gouvernement et magistrature","Du Président et ministres","Des députés et sénateurs","Des maires et préfets"],c:2},
+            {q:"Qu'est-ce que le pouvoir exécutif ?",a:["Contrôler les finances","Exécuter les lois et gouverner","La réglementation prévoit que voter les lois","Le cadre légal prévoit que rendre la justice"],c:1}
         ];
 
-        let selectedQuestions = [];
-        let currentIndex = 0;
-        let score = 0;
-        let answered = {};
+        // CR Question Bank (new questions for CR exam)
+        const questionBankCR = [
+            {q:"Parmi les propositions suivantes, laquelle constitue une participation citoyenne ?",a:["Voter aux élections","Regarder la télévision","Acheter des vêtements","Aller au restaurant"],c:0},
+            {q:"Que garantit la liberté d'expression ?",a:["Le droit de tout dire sans limite tel que défini par la loi française","Le droit de mentir dans le respect des valeurs républicaines","Le droit d'exprimer ses opinions dans le respect de la loi","Le droit d'insulter autrui selon la constitution en vigueur"],c:2},
+            {q:"À quoi sert un titre de séjour ?",a:["Le cadre légal prévoit que à voyager sans passeport","Le cadre légal prévoit que à avoir la nationalité française","Le principe retenu est que à obtenir un emploi automatiquement","À autoriser légalement un étranger à résider en France"],c:3},
+            {q:"La liberté de circulation permet à toute personne de :",a:["Se déplacer librement sur le territoire dans le respect de la loi","Il est prévu que conduire sans permis dans ce domaine","Le principe retenu est que violer les frontières dans ce cadre","Le cadre légal prévoit que traverser les propriétés privées"],c:0},
+            {q:"Sur quel site internet peut-on retrouver le symbole de la République française ?",a:["Le principe retenu est que amazon","La réglementation prévoit que facebook","Il est prévu que netflix","Elysee.fr ou gouvernement.fr"],c:3},
+            {q:"Complétez : \"Aux armes [...] ! Formez vos bataillons\"",a:["français","citoyens","révolutionnaires","soldats"],c:1},
+            {q:"Complétez : \"Allons enfants de la patrie [...]\"",a:["Le jour de gloire est arrivé","Le principe retenu est que vive la France","Marchons vers la victoire","La réglementation prévoit que liberté chérie"],c:0},
+            {q:"En application de la liberté individuelle, une personne peut :",a:["Choisir sa religion et son mode de vie dans le respect de la loi","Le cadre légal prévoit que faire ce qu'elle veut sans limite","Le principe retenu est que violer les droits d'autrui dans ce cadre","Le principe retenu est que refuser de payer des impôts en pratique"],c:0},
+            {q:"Concernant la pratique de la religion, quelle proposition est correcte ?",a:["La religion est obligatoire pour l'ensemble des citoyens concernés","La religion est interdite en public selon la constitution en vigueur","Le principe retenu est que seule une religion est autorisée","Chacun est libre de pratiquer ou non une religion"],c:3},
+            {q:"Peut-on refuser que son enfant participe aux cours de sport car ils sont mixtes ?",a:["Oui, c'est un choix parental pour l'ensemble des citoyens concernés","Oui, si la religion l'exige tel que défini par la loi française","Oui, avec autorisation du directeur","Non, l'école est obligatoire et laïque"],c:3},
+            {q:"Quelle est la devise de la France ?",a:["Il est prévu que dieu et mon droit","Le cadre légal prévoit que honneur et Patrie","Il est prévu que ordre et Progrès","Liberté, égalité, fraternité"],c:3},
+            {q:"La répudiation de sa femme est :",a:["Interdite en France, contraire à l'égalité","La réglementation prévoit que possible avec autorisation","Le principe retenu est que acceptée dans certaines régions","Le cadre légal prévoit que autorisée en France"],c:0},
+            {q:"Les impôts permettent de financer :",a:["Les services publics et l'État","Les voyages des riches","Les entreprises privées uniquement","Les partis politiques pour l'ensemble des citoyens concernés"],c:0},
+            {q:"Peut-on brûler publiquement un drapeau français ?",a:["Oui, en manifestation dans le respect des valeurs républicaines","Non, c'est interdit et punissable","Oui, si c'est artistique dans le respect des valeurs républicaines","Oui, c'est autorisé pour l'ensemble des citoyens concernés"],c:1},
+            {q:"Que fait l'État pour lutter contre les discriminations ?",a:["Il est prévu que ignore le problème dans ce cadre","La réglementation prévoit que favorise certains groupes","Adopte des lois et sanctionne les discriminations","Le cadre légal prévoit que rien, c'est privé"],c:2},
+            {q:"Que représente Marianne ?",a:["La reine de France dans le respect des valeurs républicaines","Une région française dans le respect des valeurs républicaines","La République française et ses valeurs","Une actrice célèbre tel que défini par la loi française"],c:2},
+            {q:"Qu'est-ce que la liberté d'association ?",a:["Le droit de refuser toute organisation tel que défini par la loi française","Le droit d'être seul dans le respect des valeurs républicaines","Le droit de créer et rejoindre des associations","Le droit d'interdire les associations selon la constitution en vigueur"],c:2},
+            {q:"Qu'est-ce que la liberté ?",a:["Le pouvoir d'agir selon sa volonté dans le respect des lois","Le principe retenu est que faire tout ce qu'on veut","Le principe retenu est que ignorer les règles en pratique","Le principe retenu est que ne pas travailler dans ce domaine"],c:0},
+            {q:"Qu'est-ce que la Marseillaise ?",a:["Un monument conformément aux principes de la République","Une danse tel que défini par la loi française","Une ville pour l'ensemble des citoyens concernés","L'hymne national français"],c:3},
+            {q:"Sur quel document peut-on voir Marianne ?",a:["Les factures EDF conformément aux principes de la République","Les timbres et documents officiels","Les cartes bancaires tel que défini par la loi française","Les tickets de métro tel que défini par la loi française"],c:1},
+            {q:"Un employeur refuse d'embaucher des femmes. Que dit la loi ?",a:["Le principe retenu est que c'est son droit","C'est autorisé pour certains métiers","La réglementation prévoit que c'est acceptable","C'est interdit, c'est de la discrimination"],c:3},
+            {q:"L'égalité signifie :",a:["Mêmes droits et devoirs pour tous sans distinction","Seuls les riches ont des droits selon la constitution en vigueur","Le principe retenu est que tout le monde est identique","Seuls les hommes sont égaux conformément aux principes de la République"],c:0},
+            {q:"Quelle est la place de la langue française dans la République ?",a:["Une langue parmi d'autres dans le respect des valeurs républicaines","La langue officielle de la République","Une langue optionnelle tel que défini par la loi française","Une langue régionale conformément aux principes de la République"],c:1},
+            {q:"Quels sont des symboles officiels de la République française ?",a:["Drapeau, Marseillaise, Marianne","Le principe retenu est que aigle, lion, rose","Tour Eiffel, baguette, béret","Croix, sceptre, couronne"],c:0},
+            {q:"A-t-on le droit d'insulter publiquement quelqu'un parce qu'il est différent ?",a:["Oui, liberté d'expression tel que défini par la loi française","Oui, si c'est drôle pour l'ensemble des citoyens concernés","Non, c'est une discrimination punissable","Le cadre légal prévoit que ça dépend de la personne"],c:2},
+            {q:"Le régime de la France est :",a:["Une République démocratique","Un empire pour l'ensemble des citoyens concernés","Une dictature selon la constitution en vigueur","Une monarchie pour l'ensemble des citoyens concernés"],c:0},
+            {q:"Pourquoi le principe de laïcité doit-il être respecté à l'école ?",a:["Pour accueillir tous les élèves sans discrimination religieuse","Il est prévu que pour interdire la religion dans ce cadre","Il est prévu que pour éviter les débats dans ce domaine","La réglementation prévoit que parce que l'Église l'exige"],c:0},
+            {q:"En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",a:["1958","1905","1789","2000"],c:1},
+            {q:"Une personne a-t-elle le droit de ne pas croire en une religion ?",a:["Oui, la liberté de conscience le garantit","Le cadre légal prévoit que avec autorisation","Non selon la constitution en vigueur","Non, c'est obligatoire conformément aux principes de la République"],c:0},
+            {q:"Quel droit est garanti par la laïcité ?",a:["Le droit de ne pas travailler conformément aux principes de la République","Le droit à la liberté de conscience et de religion","Le droit de voyager selon la constitution en vigueur","Le droit d'être riche conformément aux principes de la République"],c:1},
+            {q:"À l'école publique, qui peut porter des signes religieux très visibles ?",a:["Les professeurs tel que défini par la loi française","Personne, c'est interdit","Les élèves dans le respect des valeurs républicaines","Le directeur pour l'ensemble des citoyens concernés"],c:1},
+            {q:"Que signifie la neutralité de l'État selon la laïcité ?",a:["L'État ignore la religion selon la constitution en vigueur","L'État interdit toutes les religions pour l'ensemble des citoyens concernés","L'État ne favorise ni ne défavorise aucune religion","L'État impose une religion tel que défini par la loi française"],c:2},
+            {q:"Que peut faire un usager du service public dans une mairie ?",a:["La réglementation prévoit que imposer ses croyances","Refuser de respecter la laïcité","Obtenir des services publics neutres","Exiger un traitement religieux spécial"],c:2},
+            {q:"Qui doit respecter le principe de neutralité religieuse dans une préfecture ?",a:["Les visiteurs","Uniquement le préfet","Les agents publics","La réglementation prévoit que personne"],c:2},
+            {q:"La laïcité impose-t-elle aux agents publics d'être neutres vis-à-vis des usagers ?",a:["Seulement à l'école selon la constitution en vigueur","Oui, ils doivent être neutres dans leur fonction","Non conformément aux principes de la République","Seulement à la mairie conformément aux principes de la République"],c:1},
+            {q:"Que garantit le principe de laïcité ?",a:["L'athéisme obligatoire pour l'ensemble des citoyens concernés","L'interdiction des religions pour l'ensemble des citoyens concernés","La domination d'une religion pour l'ensemble des citoyens concernés","La liberté de conscience et l'égalité devant la loi"],c:3},
+            {q:"A-t-on le droit de changer de religion ?",a:["Seulement une fois dans le respect des valeurs républicaines","Non conformément aux principes de la République","Il est prévu que avec autorisation","Oui, c'est un droit fondamental"],c:3},
+            {q:"Que représente la laïcité ?",a:["Un parti politique dans le respect des valeurs républicaines","La séparation de la religion et de l'État","Une religion d'État selon la constitution en vigueur","Une organisation religieuse pour l'ensemble des citoyens concernés"],c:1},
+            {q:"Qu'est-ce qui est interdit par la Charte de la laïcité à l'école ?",a:["Les signes religieux ostensibles et le prosélytisme","Le principe retenu est que étudier l'histoire des religions","Le cadre légal prévoit que avoir une religion","La réglementation prévoit que parler de religion"],c:0},
+            {q:"Que dit l'article 1er de la Constitution française ?",a:["La France est une monarchie selon la constitution en vigueur en pratique","La France est catholique tel que défini par la loi française en pratique","La France est athée tel que défini par la loi française en pratique","La France est une République indivisible, laïque, démocratique et sociale"],c:3}
+        ];
 
-        function selectRandomQuestions() {
-            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-            selectedQuestions = shuffled.slice(0, 40);
+        let currentExamType = 'CSP';
+        let currentQuestionBank = [];
+        let selectedQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = {};
+
+        function changeExamType() {
+            const select = document.getElementById('examType');
+            currentExamType = select.value;
+            restartExam();
         }
 
-        function init() {
-            selectRandomQuestions();
+        function initExam() {
+            currentQuestionBank = currentExamType === 'CSP' ? questionBankCSP : questionBankCR;
+            selectedQuestions = selectRandomQuestions(currentQuestionBank, 40);
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = {};
+            document.getElementById('questionSection').classList.add('active');
+            document.getElementById('resultsSection').classList.remove('show');
             displayQuestion();
         }
 
-        function displayQuestion() {
-            const question = selectedQuestions[currentIndex];
-            document.getElementById('questionNumber').textContent = `Question ${currentIndex + 1}`;
-            document.getElementById('questionText').textContent = question.question;
+        function selectRandomQuestions(bank, count) {
+            const shuffled = [...bank].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, Math.min(count, shuffled.length));
+        }
 
+        function displayQuestion() {
+            const question = selectedQuestions[currentQuestionIndex];
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestionIndex + 1}`;
+            document.getElementById('questionText').textContent = question.q;
+            
             const answersContainer = document.getElementById('answersContainer');
             answersContainer.innerHTML = '';
-
-            question.answers.forEach((answer, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'answer-option';
-                btn.textContent = answer;
-                btn.onclick = () => selectAnswer(index);
-                answersContainer.appendChild(btn);
+            
+            question.a.forEach((answer, index) => {
+                const answerDiv = document.createElement('div');
+                answerDiv.className = 'answer-option';
+                answerDiv.textContent = answer;
+                answerDiv.onclick = () => selectAnswer(index);
+                answersContainer.appendChild(answerDiv);
             });
 
             document.getElementById('feedbackMessage').classList.remove('show');
-            document.getElementById('feedbackMessage').textContent = '';
-
             updateProgress();
             updateButtons();
         }
 
-        function selectAnswer(index) {
-            if (answered[currentIndex] !== undefined) return;
+        function selectAnswer(answerIndex) {
+            if (userAnswers[currentQuestionIndex] !== undefined) return;
 
-            const question = selectedQuestions[currentIndex];
-            const buttons = document.querySelectorAll('.answer-option');
-            const feedbackMsg = document.getElementById('feedbackMessage');
+            // Lock the selector and show static type info after first answer
+            const examSelect = document.getElementById('examType');
+            const examTypeInfo = document.getElementById('examTypeInfo');
+            const examLabel = document.querySelector('.exam-selector label');
+            if (examSelect.style.display !== 'none') {
+                const selectedText = examSelect.options[examSelect.selectedIndex].text;
+                examSelect.style.display = 'none';
+                if (examLabel) examLabel.style.display = 'none';
+                examTypeInfo.style.display = 'block';
+                examTypeInfo.innerHTML = '<span class="info-icon">\u{1F4CB}</span> ' + selectedText;
+                // Show the reset button in the header
+                document.getElementById('resetBtn').style.display = 'inline-flex';
+            }
 
-            answered[currentIndex] = index;
+            const question = selectedQuestions[currentQuestionIndex];
+            const answerOptions = document.querySelectorAll('.answer-option');
 
-            buttons.forEach((btn, i) => {
-                btn.classList.add('disabled');
-                if (i === question.correct) {
-                    btn.classList.add('correct');
-                } else if (i === index) {
-                    btn.classList.add('incorrect');
+            userAnswers[currentQuestionIndex] = answerIndex;
+            
+            answerOptions.forEach((option, index) => {
+                option.classList.add('disabled');
+                if (index === question.c) {
+                    option.classList.add('correct');
+                } else if (index === answerIndex) {
+                    option.classList.add('incorrect');
                 }
             });
 
-            if (index === question.correct) {
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            if (answerIndex === question.c) {
                 score++;
-                feedbackMsg.textContent = '✓ Correct !';
-                feedbackMsg.className = 'feedback-message show feedback-correct';
+                feedbackMessage.className = 'feedback-message feedback-correct show';
+                feedbackMessage.textContent = '✓ Correct ! Bonne réponse.';
             } else {
-                feedbackMsg.textContent = `✗ Incorrect. La réponse correcte est : "${question.answers[question.correct]}"`;
-                feedbackMsg.className = 'feedback-message show feedback-incorrect';
+                feedbackMessage.className = 'feedback-message feedback-incorrect show';
+                feedbackMessage.textContent = `✗ Incorrect. La bonne réponse est : "${question.a[question.c]}"`;
             }
 
             updateButtons();
         }
 
         function nextQuestion() {
-            if (currentIndex < selectedQuestions.length - 1) {
-                currentIndex++;
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                currentQuestionIndex++;
                 displayQuestion();
             } else {
                 showResults();
@@ -1623,22 +642,22 @@
         }
 
         function previousQuestion() {
-            if (currentIndex > 0) {
-                currentIndex--;
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
                 displayQuestion();
             }
         }
 
         function updateProgress() {
-            const progress = ((currentIndex + 1) / selectedQuestions.length) * 100;
+            const progress = ((currentQuestionIndex + 1) / selectedQuestions.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `Question ${currentIndex + 1} sur ${selectedQuestions.length}`;
+            document.getElementById('progressText').textContent = `Question ${currentQuestionIndex + 1} sur ${selectedQuestions.length}`;
         }
 
         function updateButtons() {
-            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
             const nextBtn = document.getElementById('nextBtn');
-            if (currentIndex === selectedQuestions.length - 1) {
+            if (currentQuestionIndex === selectedQuestions.length - 1) {
                 nextBtn.textContent = 'Terminer';
             } else {
                 nextBtn.textContent = 'Suivant →';
@@ -1648,24 +667,48 @@
         function showResults() {
             document.getElementById('questionSection').classList.remove('active');
             document.getElementById('resultsSection').classList.add('show');
-
+            
             const percentage = Math.round((score / selectedQuestions.length) * 100);
             document.getElementById('scoreDisplay').textContent = `${score}/${selectedQuestions.length}`;
             document.getElementById('percentageDisplay').textContent = `${percentage}%`;
-
+            
             const passStatus = document.getElementById('passStatus');
+            const resultMessage = document.getElementById('resultMessage');
+            
             if (percentage >= 80) {
-                passStatus.textContent = '✓ RÉUSSI';
                 passStatus.className = 'pass-status passed';
-                document.getElementById('resultMessage').textContent = 'Bravo ! Vous avez réussi l\'examen civique.';
+                passStatus.textContent = '✓ RÉUSSI';
+                resultMessage.textContent = 'Félicitations ! Vous avez réussi l\'examen civique avec succès.';
             } else {
-                passStatus.textContent = '✗ NON RÉUSSI';
                 passStatus.className = 'pass-status failed';
-                document.getElementById('resultMessage').textContent = 'Malheureusement, vous n\'avez pas atteint le score minimum de 80%. Continuez vos révisions !';
+                passStatus.textContent = '✗ NON RÉUSSI';
+                resultMessage.textContent = `Vous avez obtenu ${percentage}%. Le score minimum requis est 80%. Continuez à réviser et réessayez !`;
             }
         }
 
-        window.addEventListener('DOMContentLoaded', init);
+        function resetExamCompletely() {
+            // Restore selector visibility
+            const examSelect = document.getElementById('examType');
+            const examTypeInfo = document.getElementById('examTypeInfo');
+            const examLabel = document.querySelector('.exam-selector label');
+            if (examSelect) examSelect.style.display = 'block';
+            if (examTypeInfo) examTypeInfo.style.display = 'none';
+            if (examLabel) examLabel.style.display = 'block';
+            // Hide reset button (shown again after first answer)
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) resetBtn.style.display = 'none';
+            // Re-initialize
+            initExam();
+        }
+
+        function restartExam() {
+            resetExamCompletely();
+        }
+
+        // Initialize exam on page load
+        window.onload = function() {
+            initExam();
+        };
     </script>
 </body>
 </html>
