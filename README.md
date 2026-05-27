@@ -1,8 +1,6 @@
 # 🇫🇷 French Civic Exam Practice Test / Examen Civique Français
 
-[
-[
-[
+
 
 **[🇬🇧 English](#english)** | **[🇫🇷 Français](#français)**
 
